@@ -15,7 +15,7 @@ export interface User {
     pageIndex: number
     search?: string
     sortOrder?: 'asc' | 'desc'
-    orderByFiledName: string
+    orderByFieldName?: string
   }
   
   export interface UserState {

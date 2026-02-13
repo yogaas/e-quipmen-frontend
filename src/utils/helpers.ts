@@ -16,4 +16,9 @@ const getPaginationPages = (current: number, total: number) => {
   return pages
 }
 
-export default getPaginationPages;
+/** Format date for display (e.g. in tables) */
+export function formatDate(value: string | Date): string {
+  return new Date(value).toLocaleDateString()
+}
+
+export default getPaginationPages
