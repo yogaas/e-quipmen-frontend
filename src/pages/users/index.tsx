@@ -1,24 +1,27 @@
-import { useState } from 'react'
-import { Plus, RefreshCw } from 'lucide-react'
-import { DataTable } from '../../components/common/DataTable'
-import type { User } from '../../features/users/users.type'
-import { useUsersListPage } from '../../features/users/useUsersListPage'
-import { getUserColumns } from '../../features/users/usersColumns'
-import { PageHeader } from '../../components/common/PageHeader'
-import { Button } from '../../components/ui/Button'
-import ConfirmModal from '../../components/ui/ConfirmModal'
-import { useToast } from '../../components/common/ToastContext'
-import FormUser from './create'
+import { useState } from "react";
+import { Plus, RefreshCw, Sparkles, Users } from "lucide-react";
+import { DataTable } from "../../components/common/DataTable";
+import type { User } from "../../features/users/users.type";
+import { useUsersListPage } from "../../features/users/useUsersListPage";
+import { getUserColumns } from "../../features/users/usersColumns";
+import { PageHeader } from "../../components/common/PageHeader";
+import { Button } from "../../components/ui/Button";
+import ConfirmModal from "../../components/ui/ConfirmModal";
+import { useToast } from "../../components/common/ToastContext";
+import FormUser from "./create";
 
 export default function UserPage() {
-  const { showToast } = useToast()
+  const { showToast } = useToast();
 
-  const [deleteModal, setDeleteModal] = useState<{ open: boolean; id: number | null }>({
+  const [deleteModal, setDeleteModal] = useState<{
+    open: boolean;
+    id: number | null;
+  }>({
     open: false,
     id: null,
-  })
-  const [formModal, setFormModal] = useState(false)
-  const [editingUser, setEditingUser] = useState<User | null>(null)
+  });
+  const [formModal, setFormModal] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   const {
     list,
@@ -35,52 +38,57 @@ export default function UserPage() {
     onReload,
     fetchUserForEdit,
     deleteUser,
-  } = useUsersListPage()
+  } = useUsersListPage();
 
   const openDeleteModal = (id: number) => {
-    setDeleteModal({ open: true, id })
-  }
+    setDeleteModal({ open: true, id });
+  };
 
   const closeDeleteModal = () => {
-    setDeleteModal({ open: false, id: null })
-  }
+    setDeleteModal({ open: false, id: null });
+  };
 
   const handleConfirmDelete = () => {
     if (deleteModal.id != null && deleteModal.id > 0) {
-      deleteUser(deleteModal.id)
-      closeDeleteModal()
-      showToast('Pengguna telah dihapus dari sistem', 'success')
+      deleteUser(deleteModal.id);
+      closeDeleteModal();
+      showToast("Pengguna telah dihapus dari sistem", "success");
     }
-  }
+  };
 
   const handleEdit = async (id: number) => {
-    const user = await fetchUserForEdit(id)
+    const user = await fetchUserForEdit(id);
     if (user) {
-      setEditingUser(user)
-      setFormModal(true)
+      setEditingUser(user);
+      setFormModal(true);
     }
-  }
+  };
 
   const openCreateModal = () => {
-    setEditingUser(null)
-    setFormModal(true)
-  }
+    setEditingUser(null);
+    setFormModal(true);
+  };
 
   const closeFormModal = () => {
-    setFormModal(false)
-    setEditingUser(null)
-  }
+    setFormModal(false);
+    setEditingUser(null);
+  };
 
   const columns = getUserColumns({
     onEdit: handleEdit,
     onDelete: openDeleteModal,
-  })
+  });
+
 
   return (
     <>
       <div className="space-y-6 animate-in fade-in duration-500">
         <PageHeader
-          title="Users"
+          title={
+            <>
+              <Users className="text-blue-600" /> Users Management
+            </>
+          }
           description="Manage system users, roles, and access controls."
           action={
             <>
@@ -129,10 +137,10 @@ export default function UserPage() {
       <FormUser
         isModalOpen={formModal}
         setIsModalOpen={(open) => {
-          if (!open) closeFormModal()
+          if (!open) closeFormModal();
         }}
         userCollection={editingUser}
       />
     </>
-  )
+  );
 }
