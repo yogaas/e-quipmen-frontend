@@ -1,29 +1,29 @@
-// features/users/userSlice.ts
+// features/Items/ItemSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import {
-  getUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-  readUser,
-} from "../users/usersService";
-import type { User, UserState } from "./users.type";
+  getItems,
+  createItem,
+  updateItem,
+  deleteItem,
+  readItem,
+} from "../items/itemsService";
+import type { Item, ItemState } from "./items.type";
 import getErrorMessage from "../../app/error";
 
-export const fetchUsers = createAsyncThunk(
-  "users/fetch",
+export const fetchItems = createAsyncThunk(
+  "Items/fetch",
   async (params: any) => {
-    const res = await getUsers(params);
+    const res = await getItems(params);
     return res.data;
   },
 );
 
-export const createUserThunk = createAsyncThunk(
-  "users/create",
-  async (data: Partial<User>, { rejectWithValue }) => {
+export const createItemThunk = createAsyncThunk(
+  "Items/create",
+  async (data: Partial<Item>, { rejectWithValue }) => {
     try {
-      const res = await createUser(data);
+      const res = await createItem(data);
 
       if (!res.data.success) {
         return rejectWithValue(getErrorMessage(res.data));
@@ -36,31 +36,31 @@ export const createUserThunk = createAsyncThunk(
   },
 );
 
-export const updateUserThunk = createAsyncThunk(
-  "users/update",
-  async ({ id, data }: { id: number; data: Partial<User> }) => {
-    const res = await updateUser(id, data);
+export const updateItemThunk = createAsyncThunk(
+  "Items/update",
+  async ({ id, data }: { id: number; data: Partial<Item> }) => {
+    const res = await updateItem(id, data);
     return res.data.data;
   },
 );
 
-export const readUserThunk = createAsyncThunk(
-  "users/read",
+export const readItemThunk = createAsyncThunk(
+  "Items/read",
   async ({ id }: { id: number }) => {
-    const res = await readUser(id);
+    const res = await readItem(id);
     return res.data.data;
   },
 );
 
-export const deleteUserThunk = createAsyncThunk(
-  "users/delete",
+export const deleteItemThunk = createAsyncThunk(
+  "Items/delete",
   async (id: number) => {
-    await deleteUser(id);
+    await deleteItem(id);
     return id;
   },
 );
 
-const initialState: UserState = {
+const initialState: ItemState = {
   list: [],
   totalCount: 0,
   loading: false,
@@ -69,12 +69,12 @@ const initialState: UserState = {
   sortOrder: "",
   orderByFieldName: "",
   search: "",
-  user: null,
+  Item: null,
   error: null,
 };
 
-const userSlice = createSlice({
-  name: "users",
+const ItemSlice = createSlice({
+  name: "Items",
   initialState,
   reducers: {
     setSearch(state, action: PayloadAction<string>) {
@@ -105,10 +105,10 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       /* FETCH */
-      .addCase(fetchUsers.pending, (state) => {
+      .addCase(fetchItems.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
+      .addCase(fetchItems.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload.data;
         state.totalCount = action.payload.totalCount ?? 0;
@@ -117,26 +117,26 @@ const userSlice = createSlice({
         state.sortOrder = action.payload.sortOrder ?? "";
         state.orderByFieldName = action.payload.orderByFieldName ?? "";
       })
-      .addCase(fetchUsers.rejected, (state) => {
+      .addCase(fetchItems.rejected, (state) => {
         state.loading = false;
       })
 
       /* CREATE */
-      .addCase(createUserThunk.pending, (state) => {
+      .addCase(createItemThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createUserThunk.fulfilled, (state, action) => {
+      .addCase(createItemThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.list.push(action.payload);
       })
-      .addCase(createUserThunk.rejected, (state, action) => {
+      .addCase(createItemThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
 
       /* UPDATE */
-      .addCase(updateUserThunk.fulfilled, (state, action) => {
+      .addCase(updateItemThunk.fulfilled, (state, action) => {
         const index = state.list.findIndex((u) => u.id === action.payload.id);
         if (index !== -1) {
           state.list[index] = action.payload;
@@ -144,18 +144,18 @@ const userSlice = createSlice({
       })
 
       /* READ */
-      .addCase(readUserThunk.fulfilled, (state, action) => {
+      .addCase(readItemThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.Item = action.payload;
       })
 
       /* DELETE */
-      .addCase(deleteUserThunk.fulfilled, (state, action) => {
+      .addCase(deleteItemThunk.fulfilled, (state, action) => {
         state.list = state.list.filter((u) => u.id !== action.payload);
         state.totalCount -= 1;
       });
   },
 });
 
-export const { setSearch, setSort, setPagination } = userSlice.actions;
-export default userSlice.reducer;
+export const { setSearch, setSort, setPagination } = ItemSlice.actions;
+export default ItemSlice.reducer;

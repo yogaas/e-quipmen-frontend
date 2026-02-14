@@ -1,29 +1,28 @@
-// features/users/userSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import {
-  getUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-  readUser,
-} from "../users/usersService";
-import type { User, UserState } from "./users.type";
+  getCategorys,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+  readCategory,
+} from "../categories/categoriesService";
+import type { Category, CategoryState } from "./categories.type";
 import getErrorMessage from "../../app/error";
 
-export const fetchUsers = createAsyncThunk(
-  "users/fetch",
+export const fetchCategorys = createAsyncThunk(
+  "Categorys/fetch",
   async (params: any) => {
-    const res = await getUsers(params);
+    const res = await getCategorys(params);
     return res.data;
   },
 );
 
-export const createUserThunk = createAsyncThunk(
-  "users/create",
-  async (data: Partial<User>, { rejectWithValue }) => {
+export const createCategoryThunk = createAsyncThunk(
+  "Categorys/create",
+  async (data: Partial<Category>, { rejectWithValue }) => {
     try {
-      const res = await createUser(data);
+      const res = await createCategory(data);
 
       if (!res.data.success) {
         return rejectWithValue(getErrorMessage(res.data));
@@ -36,31 +35,31 @@ export const createUserThunk = createAsyncThunk(
   },
 );
 
-export const updateUserThunk = createAsyncThunk(
-  "users/update",
-  async ({ id, data }: { id: number; data: Partial<User> }) => {
-    const res = await updateUser(id, data);
+export const updateCategoryThunk = createAsyncThunk(
+  "Categorys/update",
+  async ({ id, data }: { id: number; data: Partial<Category> }) => {
+    const res = await updateCategory(id, data);
     return res.data.data;
   },
 );
 
-export const readUserThunk = createAsyncThunk(
-  "users/read",
+export const readCategoryThunk = createAsyncThunk(
+  "Categorys/read",
   async ({ id }: { id: number }) => {
-    const res = await readUser(id);
+    const res = await readCategory(id);
     return res.data.data;
   },
 );
 
-export const deleteUserThunk = createAsyncThunk(
-  "users/delete",
+export const deleteCategoryThunk = createAsyncThunk(
+  "Categorys/delete",
   async (id: number) => {
-    await deleteUser(id);
+    await deleteCategory(id);
     return id;
   },
 );
 
-const initialState: UserState = {
+const initialState: CategoryState = {
   list: [],
   totalCount: 0,
   loading: false,
@@ -69,12 +68,12 @@ const initialState: UserState = {
   sortOrder: "",
   orderByFieldName: "",
   search: "",
-  user: null,
+  Category: null,
   error: null,
 };
 
-const userSlice = createSlice({
-  name: "users",
+const CategorySlice = createSlice({
+  name: "Categorys",
   initialState,
   reducers: {
     setSearch(state, action: PayloadAction<string>) {
@@ -105,10 +104,10 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       /* FETCH */
-      .addCase(fetchUsers.pending, (state) => {
+      .addCase(fetchCategorys.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
+      .addCase(fetchCategorys.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload.data;
         state.totalCount = action.payload.totalCount ?? 0;
@@ -117,26 +116,26 @@ const userSlice = createSlice({
         state.sortOrder = action.payload.sortOrder ?? "";
         state.orderByFieldName = action.payload.orderByFieldName ?? "";
       })
-      .addCase(fetchUsers.rejected, (state) => {
+      .addCase(fetchCategorys.rejected, (state) => {
         state.loading = false;
       })
 
       /* CREATE */
-      .addCase(createUserThunk.pending, (state) => {
+      .addCase(createCategoryThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createUserThunk.fulfilled, (state, action) => {
+      .addCase(createCategoryThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.list.push(action.payload);
       })
-      .addCase(createUserThunk.rejected, (state, action) => {
+      .addCase(createCategoryThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
 
       /* UPDATE */
-      .addCase(updateUserThunk.fulfilled, (state, action) => {
+      .addCase(updateCategoryThunk.fulfilled, (state, action) => {
         const index = state.list.findIndex((u) => u.id === action.payload.id);
         if (index !== -1) {
           state.list[index] = action.payload;
@@ -144,18 +143,18 @@ const userSlice = createSlice({
       })
 
       /* READ */
-      .addCase(readUserThunk.fulfilled, (state, action) => {
+      .addCase(readCategoryThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.Category = action.payload;
       })
 
       /* DELETE */
-      .addCase(deleteUserThunk.fulfilled, (state, action) => {
+      .addCase(deleteCategoryThunk.fulfilled, (state, action) => {
         state.list = state.list.filter((u) => u.id !== action.payload);
         state.totalCount -= 1;
       });
   },
 });
 
-export const { setSearch, setSort, setPagination } = userSlice.actions;
-export default userSlice.reducer;
+export const { setSearch, setSort, setPagination } = CategorySlice.actions;
+export default CategorySlice.reducer;

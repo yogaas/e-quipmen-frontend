@@ -1,29 +1,35 @@
-// features/users/userSlice.ts
+// features/Roles/RoleSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import {
-  getUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-  readUser,
-} from "../users/usersService";
-import type { User, UserState } from "./users.type";
+  getRoles,
+  createRole,
+  updateRole,
+  deleteRole,
+  readRole,
+  readAllMenus,
+} from "../roles/rolesService";
+import type { Role, RoleState } from "./roles.type";
 import getErrorMessage from "../../app/error";
 
-export const fetchUsers = createAsyncThunk(
-  "users/fetch",
+export const fetchRoles = createAsyncThunk(
+  "Roles/fetch",
   async (params: any) => {
-    const res = await getUsers(params);
+    const res = await getRoles(params);
     return res.data;
   },
 );
 
-export const createUserThunk = createAsyncThunk(
-  "users/create",
-  async (data: Partial<User>, { rejectWithValue }) => {
+export const fetchAllMenu = createAsyncThunk("Menus/fetch", async () => {
+  const res = await readAllMenus();
+  return res.data;
+});
+
+export const createRoleThunk = createAsyncThunk(
+  "Roles/create",
+  async (data: Partial<Role>, { rejectWithValue }) => {
     try {
-      const res = await createUser(data);
+      const res = await createRole(data);
 
       if (!res.data.success) {
         return rejectWithValue(getErrorMessage(res.data));
@@ -36,31 +42,31 @@ export const createUserThunk = createAsyncThunk(
   },
 );
 
-export const updateUserThunk = createAsyncThunk(
-  "users/update",
-  async ({ id, data }: { id: number; data: Partial<User> }) => {
-    const res = await updateUser(id, data);
+export const updateRoleThunk = createAsyncThunk(
+  "Roles/update",
+  async ({ id, data }: { id: string; data: Partial<Role> }) => {
+    const res = await updateRole(id, data);
     return res.data.data;
   },
 );
 
-export const readUserThunk = createAsyncThunk(
-  "users/read",
-  async ({ id }: { id: number }) => {
-    const res = await readUser(id);
+export const readRoleThunk = createAsyncThunk(
+  "Roles/read",
+  async ({ id }: { id: string }) => {
+    const res = await readRole(id);
     return res.data.data;
   },
 );
 
-export const deleteUserThunk = createAsyncThunk(
-  "users/delete",
-  async (id: number) => {
-    await deleteUser(id);
+export const deleteRoleThunk = createAsyncThunk(
+  "Roles/delete",
+  async (id: string) => {
+    await deleteRole(id);
     return id;
   },
 );
 
-const initialState: UserState = {
+const initialState: RoleState = {
   list: [],
   totalCount: 0,
   loading: false,
@@ -69,12 +75,13 @@ const initialState: UserState = {
   sortOrder: "",
   orderByFieldName: "",
   search: "",
-  user: null,
+  Role: null,
   error: null,
+  Menu: null,
 };
 
-const userSlice = createSlice({
-  name: "users",
+const RoleSlice = createSlice({
+  name: "Roles",
   initialState,
   reducers: {
     setSearch(state, action: PayloadAction<string>) {
@@ -105,10 +112,10 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       /* FETCH */
-      .addCase(fetchUsers.pending, (state) => {
+      .addCase(fetchRoles.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
+      .addCase(fetchRoles.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload.data;
         state.totalCount = action.payload.totalCount ?? 0;
@@ -117,45 +124,51 @@ const userSlice = createSlice({
         state.sortOrder = action.payload.sortOrder ?? "";
         state.orderByFieldName = action.payload.orderByFieldName ?? "";
       })
-      .addCase(fetchUsers.rejected, (state) => {
+      .addCase(fetchRoles.rejected, (state) => {
         state.loading = false;
       })
 
+      .addCase(fetchAllMenu.fulfilled, (state, action) => {
+        state.Menu = action.payload.data;
+      })
+
       /* CREATE */
-      .addCase(createUserThunk.pending, (state) => {
+      .addCase(createRoleThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createUserThunk.fulfilled, (state, action) => {
+      .addCase(createRoleThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.list.push(action.payload);
       })
-      .addCase(createUserThunk.rejected, (state, action) => {
+      .addCase(createRoleThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
 
       /* UPDATE */
-      .addCase(updateUserThunk.fulfilled, (state, action) => {
-        const index = state.list.findIndex((u) => u.id === action.payload.id);
+      .addCase(updateRoleThunk.fulfilled, (state, action) => {
+        const index = state.list.findIndex(
+          (u) => u.role === action.payload.role,
+        );
         if (index !== -1) {
           state.list[index] = action.payload;
         }
       })
 
       /* READ */
-      .addCase(readUserThunk.fulfilled, (state, action) => {
+      .addCase(readRoleThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.Role = action.payload;
       })
 
       /* DELETE */
-      .addCase(deleteUserThunk.fulfilled, (state, action) => {
-        state.list = state.list.filter((u) => u.id !== action.payload);
+      .addCase(deleteRoleThunk.fulfilled, (state, action) => {
+        state.list = state.list.filter((u) => u.role !== action.payload);
         state.totalCount -= 1;
       });
   },
 });
 
-export const { setSearch, setSort, setPagination } = userSlice.actions;
-export default userSlice.reducer;
+export const { setSearch, setSort, setPagination } = RoleSlice.actions;
+export default RoleSlice.reducer;
