@@ -12,7 +12,6 @@ import { useToast } from "../../../components/common/ToastContext";
 import { FormInput } from "../../../components/ui/FormInput";
 import { IMapper } from "../../../app/mapper";
 import { handleThunkWithToast } from "../../../utils/thunkToast";
-import { FormSelectSearch } from "../../../components/ui/FormSelectSearch";
 
 const ItemSchema = z.object({
   name: z.string().min(3, "Name minimal 3 karakter"),
@@ -40,7 +39,6 @@ export default function FormItem({
   const defaultValues = mapToFormValues(ItemCollection ?? undefined);
 
   const {
-    control,
     register,
     handleSubmit,
     reset,

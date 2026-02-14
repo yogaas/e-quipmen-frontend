@@ -1,8 +1,6 @@
 import { Box } from "lucide-react";
-import { Badge } from "../../../../components/ui/Badge";
 import type { Column } from "../../../../components/common/DataTable";
 import type { Category } from "../../categories.type";
-import { formatDate } from "../../../../utils/helpers";
 import { TableRowActions } from "../../../../components/common/TableRowActions";
 
 export interface CategoryColumnsHandlers {
