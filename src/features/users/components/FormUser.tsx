@@ -1,22 +1,21 @@
-import { act, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Save, X } from "lucide-react";
 import {
   createUserThunk,
   updateUserThunk,
-} from "../../features/users/usersSlice";
-import { useAppDispatch } from "../../app/hooks";
-import { Button } from "../../components/ui/Button";
-import { Modal } from "../../components/ui/Modal";
-import type { User } from "../../features/users/users.type";
+} from "../usersSlice";
+import { useAppDispatch } from "../../../app/hooks";
+import { Button } from "../../../components/ui/Button";
+import { Modal } from "../../../components/ui/Modal";
+import type { User } from "../users.type";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "../../components/common/ToastContext";
-import { FormInput } from "../../components/ui/FormInput";
-import { IMapper } from "../../app/mapper";
-import { handleThunkWithToast } from "../../utils/thunkToast";
-import { FormSelect } from "../../components/ui/FormSelect";
-import { FormSelectSearch } from "../../components/ui/FormSelectSearch";
+import { useToast } from "../../../components/common/ToastContext";
+import { FormInput } from "../../../components/ui/FormInput";
+import { IMapper } from "../../../app/mapper";
+import { handleThunkWithToast } from "../../../utils/thunkToast";
+import { FormSelectSearch } from "../../../components/ui/FormSelectSearch";
 
 const userSchema = z.object({
   name: z.string().min(3, "Name minimal 3 karakter"),

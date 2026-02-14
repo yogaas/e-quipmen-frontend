@@ -4,7 +4,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/layout/Sidebar';
 import Topbar from './components/layout/Topbar';
 import Dashboard from './pages/Dashboard';
-import UserPage from './pages/users/index';
+import UserPage from '../src/features/users/userPage';
 import Products from './pages/Products';
 import Calendar from './pages/Calendar';
 import Email from './pages/Email';
@@ -12,7 +12,7 @@ import Widgets from './pages/Widgets';
 import Sales from './pages/Sales';
 import UserSettings from './pages/settings/UserSettings';
 import GeneralSettings from './pages/settings/GeneralSettings';
-import Login from './pages/Login';
+import AuthPage from './features/auth/authPage';
 import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import Toast from './components/ui/Toast';
@@ -83,7 +83,7 @@ const App: React.FC = () => {
     <ToastProvider>
       <Routes>
         {/* Public Routes */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<Register />} />
 
         {/* Protected Dashboard Routes */}

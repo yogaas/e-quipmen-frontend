@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import {  useNavigate , Link } from 'react-router-dom';
 import { Mail, Lock, LogIn, ShieldCheck, Github } from 'lucide-react';
-import { Button } from '../components/ui/Button';
+import { Button } from '../../../components/ui/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginAsync, clearError } from '../features/auth/authSlice';
-import type { AppDispatch, RootState } from '../app/store';
+import { loginAsync, clearError } from '../authSlice';
+import type { AppDispatch, RootState } from '../../../app/store';
 
-const Login: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -148,4 +148,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default LoginPage;
