@@ -1,7 +1,7 @@
 import { DataTable } from "../../../components/common/DataTable";
 import type { User } from "../users.type";
-import { useUsersListPage } from "../useUsersListPage";
-import { getUserColumns } from "../usersColumns";
+import { useUsersListPage } from "./utils/useUsersListPage";
+import { getUserColumns } from "./utils/usersColumns";
 
 interface UserTableProp {
   handleEdit : (id : number) => void

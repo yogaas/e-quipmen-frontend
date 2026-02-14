@@ -6,7 +6,7 @@ import { Button } from "../../components/ui/Button";
 import { useState } from "react";
 import { useToast } from "../../components/common/ToastContext";
 import type { User } from "./users.type";
-import { useUsersListPage } from "./useUsersListPage";
+import { useUsersListPage } from "./components/utils/useUsersListPage";
 import UserTable from "./components/UserTable";
 
 export default function UserPage() {

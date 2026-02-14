@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks'
 import {
   fetchUsers,
   setSearch,
@@ -7,8 +7,8 @@ import {
   setPagination,
   deleteUserThunk,
   readUserThunk,
-} from './usersSlice'
-import type { User } from './users.type'
+} from '../../usersSlice'
+import type { User } from '../../users.type'
 
 /**
  * Encapsulates list state and handlers for Users CRUD page.
