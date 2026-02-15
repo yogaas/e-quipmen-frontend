@@ -1,4 +1,4 @@
-import { Box, Landmark } from "lucide-react";
+import { Landmark } from "lucide-react";
 import { Badge } from "../../../../components/ui/Badge";
 import type { Column } from "../../../../components/common/DataTable";
 import type { Section } from "../../sections.type";
