@@ -1,4 +1,4 @@
-import { Key, KeyRound, Plus, RefreshCw } from "lucide-react";
+import { KeyRound, Plus, RefreshCw } from "lucide-react";
 import { PageHeader } from "../../components/common/PageHeader";
 import ConfirmModal from "../../components/ui/ConfirmModal";
 import FormRole from "./components/FormRole";
