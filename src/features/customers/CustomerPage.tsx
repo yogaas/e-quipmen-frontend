@@ -1,38 +1,39 @@
-import { Key, KeyRound, Plus, RefreshCw } from "lucide-react";
+import { Plus, RefreshCw, Box } from "lucide-react";
 import { PageHeader } from "../../components/common/PageHeader";
 import ConfirmModal from "../../components/ui/ConfirmModal";
-import FormRole from "./components/FormRole";
+import FormCustomer from "./components/FormCustomer";
 import { Button } from "../../components/ui/Button";
 import { useState } from "react";
 import { useToast } from "../../components/common/ToastContext";
-import type { Role } from "./roles.type";
-import RoleTable from "./components/RoleTable";
-import { useRolesListPage } from "./components/utils/useUsersListPage";
+import type { Customer } from "./customers.type";
+import { useCustomersListPage } from "./components/utils/useCustomersListPage";
+import CustomerTable from "./components/CustomerTable";
 
-export default function RolePage() {
+export default function CustomerPage() {
   const { showToast } = useToast();
 
   const [deleteModal, setDeleteModal] = useState<{
     open: boolean;
-    id: string | null;
+    id: number | null;
   }>({
     open: false,
     id: null,
   });
   const [formModal, setFormModal] = useState(false);
-  const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
-  const { onReload, deleteRole, fetchRoleForEdit } = useRolesListPage();
+  const { onReload, deleteCustomer, fetchCustomerForEdit } =
+    useCustomersListPage();
 
   const handleConfirmDelete = () => {
-    if (deleteModal.id != null && deleteModal.id.trim() !== "") {
-      deleteRole(deleteModal.id);
+    if (deleteModal.id != null && deleteModal.id > 0) {
+      deleteCustomer(deleteModal.id);
       closeDeleteModal();
-      showToast("Role telah dihapus dari sistem", "success");
+      showToast("Pengguna telah dihapus dari sistem", "success");
     }
   };
 
-  const openDeleteModal = (id: string) => {
+  const openDeleteModal = (id: number) => {
     setDeleteModal({ open: true, id });
   };
 
@@ -41,19 +42,19 @@ export default function RolePage() {
   };
 
   const openCreateModal = () => {
-    setEditingRole(null);
+    setEditingCustomer(null);
     setFormModal(true);
   };
 
   const closeFormModal = () => {
     setFormModal(false);
-    setEditingRole(null);
+    setEditingCustomer(null);
   };
 
-  const handleEdit = async (id: string) => {
-    const Role = await fetchRoleForEdit(id);
-    if (Role) {
-      setEditingRole(Role);
+  const handleEdit = async (id: number) => {
+    const Customer = await fetchCustomerForEdit(id);
+    if (Customer) {
+      setEditingCustomer(Customer);
       setFormModal(true);
     }
   };
@@ -64,17 +65,17 @@ export default function RolePage() {
         <PageHeader
           title={
             <>
-              <KeyRound className="text-blue-600" /> Roles Management
+              <Box className="text-blue-600" /> Customers Management
             </>
           }
-          description="Manage system Roles, roles, and access controls."
+          description="Manage system Customers, roles, and access controls."
           action={
             <>
               <Button
                 onClick={openCreateModal}
                 className="gap-2 shadow-lg shadow-primary-500/20"
               >
-                <Plus size={18} /> New Role
+                <Plus size={18} /> New Customer
               </Button>
               <Button
                 variant="outline"
@@ -87,23 +88,26 @@ export default function RolePage() {
           }
         />
 
-        <RoleTable handleEdit={handleEdit} openDeleteModal={openDeleteModal} />
+        <CustomerTable
+          handleEdit={handleEdit}
+          openDeleteModal={openDeleteModal}
+        />
       </div>
 
       <ConfirmModal
         isOpen={deleteModal.open}
         onClose={closeDeleteModal}
         onConfirm={handleConfirmDelete}
-        title="Hapus Role?"
+        title="Hapus Customer?"
         message="Tindakan ini permanen. Akun pengguna akan dihapus dari sistem."
       />
 
-      <FormRole
+      <FormCustomer
         isModalOpen={formModal}
         setIsModalOpen={(open) => {
           if (!open) closeFormModal();
         }}
-        RoleCollection={editingRole}
+        CustomerCollection={editingCustomer}
       />
     </>
   );

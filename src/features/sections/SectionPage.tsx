@@ -1,38 +1,39 @@
-import { Key, KeyRound, Plus, RefreshCw } from "lucide-react";
+import { Plus, RefreshCw, Box } from "lucide-react";
 import { PageHeader } from "../../components/common/PageHeader";
 import ConfirmModal from "../../components/ui/ConfirmModal";
-import FormRole from "./components/FormRole";
+import FormSection from "./components/FormCustomer";
 import { Button } from "../../components/ui/Button";
 import { useState } from "react";
 import { useToast } from "../../components/common/ToastContext";
-import type { Role } from "./roles.type";
-import RoleTable from "./components/RoleTable";
-import { useRolesListPage } from "./components/utils/useUsersListPage";
+import type { Section } from "./sections.type";
+import { useSectionsListPage } from "./components/utils/useSectionsListPage";
+import SectionTable from "./components/SectionTable";
 
-export default function RolePage() {
+export default function SectionPage() {
   const { showToast } = useToast();
 
   const [deleteModal, setDeleteModal] = useState<{
     open: boolean;
-    id: string | null;
+    id: number | null;
   }>({
     open: false,
     id: null,
   });
   const [formModal, setFormModal] = useState(false);
-  const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [editingSection, setEditingSection] = useState<Section | null>(null);
 
-  const { onReload, deleteRole, fetchRoleForEdit } = useRolesListPage();
+  const { onReload, deleteSection, fetchSectionForEdit } =
+    useSectionsListPage();
 
   const handleConfirmDelete = () => {
-    if (deleteModal.id != null && deleteModal.id.trim() !== "") {
-      deleteRole(deleteModal.id);
+    if (deleteModal.id != null && deleteModal.id > 0) {
+      deleteSection(deleteModal.id);
       closeDeleteModal();
-      showToast("Role telah dihapus dari sistem", "success");
+      showToast("Pengguna telah dihapus dari sistem", "success");
     }
   };
 
-  const openDeleteModal = (id: string) => {
+  const openDeleteModal = (id: number) => {
     setDeleteModal({ open: true, id });
   };
 
@@ -41,19 +42,19 @@ export default function RolePage() {
   };
 
   const openCreateModal = () => {
-    setEditingRole(null);
+    setEditingSection(null);
     setFormModal(true);
   };
 
   const closeFormModal = () => {
     setFormModal(false);
-    setEditingRole(null);
+    setEditingSection(null);
   };
 
-  const handleEdit = async (id: string) => {
-    const Role = await fetchRoleForEdit(id);
-    if (Role) {
-      setEditingRole(Role);
+  const handleEdit = async (id: number) => {
+    const Section = await fetchSectionForEdit(id);
+    if (Section) {
+      setEditingSection(Section);
       setFormModal(true);
     }
   };
@@ -64,17 +65,17 @@ export default function RolePage() {
         <PageHeader
           title={
             <>
-              <KeyRound className="text-blue-600" /> Roles Management
+              <Box className="text-blue-600" /> Sections Management
             </>
           }
-          description="Manage system Roles, roles, and access controls."
+          description="Manage system Sections, roles, and access controls."
           action={
             <>
               <Button
                 onClick={openCreateModal}
                 className="gap-2 shadow-lg shadow-primary-500/20"
               >
-                <Plus size={18} /> New Role
+                <Plus size={18} /> New Section
               </Button>
               <Button
                 variant="outline"
@@ -87,23 +88,26 @@ export default function RolePage() {
           }
         />
 
-        <RoleTable handleEdit={handleEdit} openDeleteModal={openDeleteModal} />
+        <SectionTable
+          handleEdit={handleEdit}
+          openDeleteModal={openDeleteModal}
+        />
       </div>
 
       <ConfirmModal
         isOpen={deleteModal.open}
         onClose={closeDeleteModal}
         onConfirm={handleConfirmDelete}
-        title="Hapus Role?"
+        title="Hapus Section?"
         message="Tindakan ini permanen. Akun pengguna akan dihapus dari sistem."
       />
 
-      <FormRole
+      <FormSection
         isModalOpen={formModal}
         setIsModalOpen={(open) => {
           if (!open) closeFormModal();
         }}
-        RoleCollection={editingRole}
+        SectionCollection={editingSection}
       />
     </>
   );

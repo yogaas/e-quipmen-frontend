@@ -4,6 +4,9 @@ import userReducer from "../features/users/usersSlice";
 import roleReducer from "../features/roles/rolesSlice";
 import categoryReducer from "../features/categories/categoriesSlice";
 import itemReducer from "../features/items/itemsSlice";
+import supplierReducer from "../features/suppliers/suppliersSlice";
+import customerReducer from "../features/customers/customersSlice";
+import sectionReducer from "../features/sections/sectionsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +15,9 @@ export const store = configureStore({
     roles: roleReducer,
     categories: categoryReducer,
     items: itemReducer,
+    suppliers: supplierReducer,
+    customers: customerReducer,
+    sections: sectionReducer,
   },
 });
 

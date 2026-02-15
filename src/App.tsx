@@ -19,6 +19,9 @@ import { ToastProvider, useToast } from "./components/common/ToastContext";
 import RolePage from "./features/roles/rolesPage";
 import CategoryPage from "./features/categories/CategoryPage";
 import ItemPage from "./features/items/ItemPage";
+import SectionPage from "./features/sections/SectionPage";
+import CustomerPage from "./features/customers/CustomerPage";
+import SupplierPage from "./features/suppliers/SupplierPage";
 
 const ToastContainer: React.FC = () => {
   const { toasts, removeToast } = useToast();
@@ -109,6 +112,10 @@ const App: React.FC = () => {
                   <Route path="/roles" element={<RolePage />} />
                   <Route path="/items" element={<ItemPage />} />
                   <Route path="/categories" element={<CategoryPage />} />
+                  <Route path="/suppliers" element={<SupplierPage />} />
+                  <Route path="/customers" element={<CustomerPage />} />
+                  <Route path="/sections" element={<SectionPage />} />
+
                   <Route path="/products" element={<Products />} />
                   <Route path="/calendar" element={<Calendar />} />
                   <Route path="/email" element={<Email />} />
