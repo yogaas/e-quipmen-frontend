@@ -1,47 +1,50 @@
-import { useState, useRef, useEffect } from 'react'
-import { ChevronDown, Search, Check, X } from 'lucide-react'
+import { useState, useRef, useEffect } from "react";
+import { ChevronDown, Search, Check, X } from "lucide-react";
 import {
   Controller,
   type Control,
   type FieldValues,
   type RegisterOptions,
   type Path,
-} from 'react-hook-form'
+} from "react-hook-form";
 
-interface Option {
+export interface Option {
   value: string;
   label: string;
 }
 
 interface FormSelectSearchProps<T extends FieldValues> {
-  name: Path<T>
-  control: Control<T>
-  options: Option[]
-  placeholder?: string
-  label?: string
-  rules?: RegisterOptions<T, Path<T>>
+  name: Path<T>;
+  control: Control<T>;
+  options: Option[];
+  placeholder?: string;
+  label?: string;
+  rules?: RegisterOptions<T, Path<T>>;
 }
 
 export function FormSelectSearch<T extends FieldValues>({
   name,
   control,
   options,
-  placeholder = 'Select an option...',
+  placeholder = "Select an option...",
   label,
-  rules
+  rules,
 }: FormSelectSearchProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -50,11 +53,13 @@ export function FormSelectSearch<T extends FieldValues>({
       control={control}
       rules={rules}
       render={({ field, fieldState }) => {
-        const filteredOptions = options.filter(option =>
-          option.label.toLowerCase().includes(searchTerm.toLowerCase())
+        const filteredOptions = options.filter((option) =>
+          option.label.toLowerCase().includes(searchTerm.toLowerCase()),
         );
 
-        const selectedOption = options.find(opt => opt.value === field.value.toString());
+        const selectedOption = options.find(
+          (opt) => opt.value === field?.value?.toString(),
+        );
 
         return (
           <div>
@@ -67,11 +72,13 @@ export function FormSelectSearch<T extends FieldValues>({
             <div className="w-full relative" ref={wrapperRef}>
               <div
                 className={`w-full bg-slate-50 border rounded-xl text-sm px-4 py-2.5 flex items-center justify-between cursor-pointer ${
-                  fieldState.error ? 'border-red-500' : 'border-slate-200'
+                  fieldState.error ? "border-red-500" : "border-slate-200"
                 }`}
                 onClick={() => setIsOpen(!isOpen)}
               >
-                <span className={selectedOption ? 'text-gray-900' : 'text-gray-400'}>
+                <span
+                  className={selectedOption ? "text-gray-900" : "text-gray-400"}
+                >
                   {selectedOption ? selectedOption.label : placeholder}
                 </span>
 
@@ -80,14 +87,17 @@ export function FormSelectSearch<T extends FieldValues>({
                     <div
                       onClick={(e) => {
                         e.stopPropagation();
-                        field.onChange('');
+                        field.onChange("");
                       }}
                       className="text-gray-400 hover:text-gray-600 p-1"
                     >
                       <X size={14} />
                     </div>
                   )}
-                  <ChevronDown size={16} className={`${isOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    size={16}
+                    className={`${isOpen ? "rotate-180" : ""}`}
+                  />
                 </div>
               </div>
 
@@ -101,7 +111,10 @@ export function FormSelectSearch<T extends FieldValues>({
                 <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 flex flex-col">
                   <div className="p-2 border-b sticky top-0 bg-white">
                     <div className="relative">
-                      <Search size={14} className="absolute left-2.5 top-2.5 text-gray-400" />
+                      <Search
+                        size={14}
+                        className="absolute left-2.5 top-2.5 text-gray-400"
+                      />
                       <input
                         type="text"
                         className="w-full pl-8 pr-3 py-1.5 text-sm bg-gray-50 border rounded-md"
@@ -121,13 +134,13 @@ export function FormSelectSearch<T extends FieldValues>({
                           key={option.value}
                           className={`px-4 py-2 text-sm cursor-pointer flex items-center justify-between hover:bg-blue-50 ${
                             field.value === option.value
-                              ? 'bg-blue-50 text-blue-600 font-medium'
-                              : ''
+                              ? "bg-blue-50 text-blue-600 font-medium"
+                              : ""
                           }`}
                           onClick={() => {
                             field.onChange(option.value);
                             setIsOpen(false);
-                            setSearchTerm('');
+                            setSearchTerm("");
                           }}
                         >
                           {option.label}

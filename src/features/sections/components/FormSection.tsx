@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Save, X } from "lucide-react";
 import { createSectionThunk, updateSectionThunk } from "../sectionsSlice";
 import { useAppDispatch } from "../../../app/hooks";
@@ -12,14 +12,26 @@ import { useToast } from "../../../components/common/ToastContext";
 import { FormInput } from "../../../components/ui/FormInput";
 import { IMapper } from "../../../app/mapper";
 import { handleThunkWithToast } from "../../../utils/thunkToast";
+import {
+  FormSelectSearch,
+  type Option,
+} from "../../../components/ui/FormSelectSearch";
+import { fetchAccounts } from "../../accounts/accountsSlice";
+import type { Account } from "../../accounts/accounts.type";
 
 const SectionSchema = z.object({
+  account_id: z.string().min(1, "Account is required"),
   name: z.string().min(3, "Name minimal 3 karakter"),
+  tag: z.string().min(3, "Name minimal 3 karakter"),
+  active: z.string().min(1, "Active status is required"),
 });
 type SectionFormValues = z.infer<typeof SectionSchema>;
 
 const mapToFormValues = IMapper<SectionFormValues>({
   name: (s) => s?.name ?? "",
+  tag: (s) => s?.tag ?? "",
+  active: (s) => s?.active,
+  account_id: (s) => s?.account_id?.toString() ?? "",
 });
 
 interface FormSectionProps {
@@ -35,10 +47,12 @@ export default function FormSection({
 }: FormSectionProps) {
   const { showToast } = useToast();
   const dispatch = useAppDispatch();
+  const [isAccountsLoaded, setIsAccountsLoaded] = useState<Option[]>([]);
 
   const defaultValues = mapToFormValues(SectionCollection ?? undefined);
 
   const {
+    control,
     register,
     handleSubmit,
     reset,
@@ -47,6 +61,23 @@ export default function FormSection({
     resolver: zodResolver(SectionSchema),
     defaultValues,
   });
+
+  // Fetch accounts on mount if needed
+  const initAccounts = () => {
+    dispatch(fetchAccounts({ pageIndex: 0, pageSize: 1000 })).then((res) => {
+      if (fetchAccounts.fulfilled.match(res)) {
+        const options: Option[] = res.payload.data.map((account: Account) => ({
+          label: account.name_account,
+          value: account.id.toString(),
+        }));
+        setIsAccountsLoaded(options);
+      }
+    });
+  };
+
+  useEffect(() => {
+    initAccounts();
+  }, [isModalOpen]);
 
   useEffect(() => {
     reset(mapToFormValues(SectionCollection ?? undefined));
@@ -80,12 +111,40 @@ export default function FormSection({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-4">
           <FormInput<SectionFormValues>
-            label="Display Name"
+            label="Section Name"
             type="text"
             name="name"
-            placeholder="Tools, Materials, etc"
+            placeholder="Lobby 1, Meeting Room A, etc"
             register={register}
             error={errors.name}
+          />
+
+          <FormInput<SectionFormValues>
+            label="Tag Name"
+            type="text"
+            name="tag"
+            placeholder="meeting-room-a, etc"
+            register={register}
+            error={errors.tag}
+          />
+
+          <FormSelectSearch
+            name="account_id"
+            control={control}
+            label="Account"
+            rules={{ required: "Account is required" }}
+            options={isAccountsLoaded}
+          />
+
+          <FormSelectSearch
+            name="active"
+            control={control}
+            label="Status"
+            rules={{ required: "Status is required" }}
+            options={[
+              { label: "Active", value: "1" },
+              { label: "Inactive", value: "0" },
+            ]}
           />
         </div>
 

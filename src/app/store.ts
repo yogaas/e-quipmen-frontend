@@ -7,6 +7,7 @@ import itemReducer from "../features/items/itemsSlice";
 import supplierReducer from "../features/suppliers/suppliersSlice";
 import customerReducer from "../features/customers/customersSlice";
 import sectionReducer from "../features/sections/sectionsSlice";
+import accountReducer from "../features/accounts/accountsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     items: itemReducer,
     suppliers: supplierReducer,
     customers: customerReducer,
+    accounts: accountReducer,
     sections: sectionReducer,
   },
 });

@@ -22,6 +22,8 @@ import ItemPage from "./features/items/ItemPage";
 import SectionPage from "./features/sections/SectionPage";
 import CustomerPage from "./features/customers/CustomerPage";
 import SupplierPage from "./features/suppliers/SupplierPage";
+import NotFoundPage from "./pages/NotFoundPage.tsx";
+import AccountPage from "./features/accounts/AccountPage.tsx";
 
 const ToastContainer: React.FC = () => {
   const { toasts, removeToast } = useToast();
@@ -115,6 +117,7 @@ const App: React.FC = () => {
                   <Route path="/suppliers" element={<SupplierPage />} />
                   <Route path="/customers" element={<CustomerPage />} />
                   <Route path="/sections" element={<SectionPage />} />
+                  <Route path="/accounts" element={<AccountPage />} />
 
                   <Route path="/products" element={<Products />} />
                   <Route path="/calendar" element={<Calendar />} />
@@ -125,14 +128,7 @@ const App: React.FC = () => {
                     path="/settings/general"
                     element={<GeneralSettings />}
                   />
-                  <Route
-                    path="*"
-                    element={
-                      <div className="flex items-center justify-center h-full">
-                        404 Not Found
-                      </div>
-                    }
-                  />
+                  <Route path="*" element={<NotFoundPage />} />
                 </Route>
               </Routes>
             </ProtectedLayout>

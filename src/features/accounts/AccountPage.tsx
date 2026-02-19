@@ -1,15 +1,15 @@
-import { Plus, RefreshCw, Box } from "lucide-react";
+import { Plus, RefreshCw, BookCopy } from "lucide-react";
 import { PageHeader } from "../../components/common/PageHeader";
 import ConfirmModal from "../../components/ui/ConfirmModal";
-import FormSection from "./components/FormSection";
+import FormAccount from "./components/FormAccount";
 import { Button } from "../../components/ui/Button";
 import { useState } from "react";
 import { useToast } from "../../components/common/ToastContext";
-import type { Section } from "./sections.type";
-import { useSectionsListPage } from "./components/utils/useSectionsListPage";
-import SectionTable from "./components/SectionTable";
+import type { Account } from "./accounts.type";
+import { useAccountsListPage } from "./components/utils/useAccountsListPage";
+import AccountTable from "./components/AccountTable";
 
-export default function SectionPage() {
+export default function AccountPage() {
   const { showToast } = useToast();
 
   const [deleteModal, setDeleteModal] = useState<{
@@ -20,14 +20,15 @@ export default function SectionPage() {
     id: null,
   });
   const [formModal, setFormModal] = useState(false);
-  const [editingSection, setEditingSection] = useState<Section | null>(null);
+  const [editingAccount, setEditingAccount] = useState<Account | null>(null);
+  const [isHeader, setIsHeader] = useState<Account | null>(null);
 
-  const { onReload, deleteSection, fetchSectionForEdit } =
-    useSectionsListPage();
+  const { onReload, deleteAccount, fetchAccountForEdit } =
+    useAccountsListPage();
 
   const handleConfirmDelete = () => {
     if (deleteModal.id != null && deleteModal.id > 0) {
-      deleteSection(deleteModal.id);
+      deleteAccount(deleteModal.id);
       closeDeleteModal();
       showToast("Pengguna telah dihapus dari sistem", "success");
     }
@@ -42,19 +43,29 @@ export default function SectionPage() {
   };
 
   const openCreateModal = () => {
-    setEditingSection(null);
+    setIsHeader(null);
+    setEditingAccount(null);
     setFormModal(true);
   };
 
   const closeFormModal = () => {
     setFormModal(false);
-    setEditingSection(null);
+    setEditingAccount(null);
+  };
+
+  const handleAddChild = async (id: number) => {
+    const Account = await fetchAccountForEdit(id);
+    if (Account) {
+      setIsHeader(Account);
+      setEditingAccount(null);
+      setFormModal(true);
+    }
   };
 
   const handleEdit = async (id: number) => {
-    const Section = await fetchSectionForEdit(id);
-    if (Section) {
-      setEditingSection(Section);
+    const Account = await fetchAccountForEdit(id);
+    if (Account) {
+      setEditingAccount(Account);
       setFormModal(true);
     }
   };
@@ -65,17 +76,17 @@ export default function SectionPage() {
         <PageHeader
           title={
             <>
-              <Box className="text-blue-600" /> Sections Management
+              <BookCopy className="text-blue-600" /> Accounts Management
             </>
           }
-          description="Manage system Sections, roles, and access controls."
+          description="Manage system Accounts, roles, and access controls."
           action={
             <>
               <Button
                 onClick={openCreateModal}
                 className="gap-2 shadow-lg shadow-primary-500/20"
               >
-                <Plus size={18} /> New Section
+                <Plus size={18} /> New Account
               </Button>
               <Button
                 variant="outline"
@@ -88,9 +99,10 @@ export default function SectionPage() {
           }
         />
 
-        <SectionTable
+        <AccountTable
           handleEdit={handleEdit}
           openDeleteModal={openDeleteModal}
+          handleAddChild={handleAddChild}
         />
       </div>
 
@@ -98,16 +110,17 @@ export default function SectionPage() {
         isOpen={deleteModal.open}
         onClose={closeDeleteModal}
         onConfirm={handleConfirmDelete}
-        title="Hapus Section?"
+        title="Hapus Account?"
         message="Tindakan ini permanen. Akun pengguna akan dihapus dari sistem."
       />
 
-      <FormSection
+      <FormAccount
         isModalOpen={formModal}
         setIsModalOpen={(open) => {
           if (!open) closeFormModal();
         }}
-        SectionCollection={editingSection}
+        AccountCollection={editingAccount}
+        headerAcount={isHeader}
       />
     </>
   );

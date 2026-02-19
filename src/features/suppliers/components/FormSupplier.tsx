@@ -15,11 +15,19 @@ import { handleThunkWithToast } from "../../../utils/thunkToast";
 
 const SupplierSchema = z.object({
   name: z.string().min(3, "Name minimal 3 karakter"),
+  company: z.string().min(3, "Company minimal 3 karakter"),
+  phone: z.string().min(10, "Phone minimal 3 karakter"),
+  email: z.string().email('Email address is required'),
+  address: z.string().min(3, "Address minimal 3 karakter"),
 });
 type SupplierFormValues = z.infer<typeof SupplierSchema>;
 
 const mapToFormValues = IMapper<SupplierFormValues>({
   name: (s) => s?.name ?? "",
+  company: (s) => s?.company ?? "",
+  phone: (s) => s?.phone ?? "",
+  email: (s) => s?.email ?? "",
+  address: (s) => s?.address ?? "",
 });
 
 interface FormSupplierProps {
@@ -82,12 +90,48 @@ export default function FormSupplier({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-4">
           <FormInput<SupplierFormValues>
-            label="Display Name"
+            label="Supplier Name"
             type="text"
             name="name"
-            placeholder="Tools, Materials, etc"
+            placeholder="Unilever"
             register={register}
             error={errors.name}
+          />
+
+          <FormInput<SupplierFormValues>
+              label="Company"
+              type="text"
+              name="company"
+              placeholder="PT Unilever"
+              register={register}
+              error={errors.company}
+          />
+
+          <FormInput<SupplierFormValues>
+              label="Email"
+              type="text"
+              name="email"
+              placeholder="example@gmail.com"
+              register={register}
+              error={errors.email}
+          />
+
+          <FormInput<SupplierFormValues>
+              label="Phone Number"
+              type="text"
+              name="phone"
+              placeholder="+62 8888 6554 2231"
+              register={register}
+              error={errors.phone}
+          />
+
+          <FormInput<SupplierFormValues>
+              label="Address"
+              type="text"
+              name="address"
+              placeholder="Merburn city, Newyork"
+              register={register}
+              error={errors.address}
           />
         </div>
 
