@@ -24,6 +24,7 @@ import CustomerPage from "./features/customers/CustomerPage";
 import SupplierPage from "./features/suppliers/SupplierPage";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
 import AccountPage from "./features/accounts/AccountPage.tsx";
+import PaymentPage from "./features/payments/PaymentPage.tsx";
 
 const ToastContainer: React.FC = () => {
   const { toasts, removeToast } = useToast();
@@ -118,6 +119,7 @@ const App: React.FC = () => {
                   <Route path="/customers" element={<CustomerPage />} />
                   <Route path="/sections" element={<SectionPage />} />
                   <Route path="/accounts" element={<AccountPage />} />
+                  <Route path="/type-payments" element={<PaymentPage />} />
 
                   <Route path="/products" element={<Products />} />
                   <Route path="/calendar" element={<Calendar />} />

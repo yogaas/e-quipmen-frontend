@@ -73,17 +73,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         {
           name: "Sales (POS)",
           icon: <ShoppingCart size={18} />,
-          path: "/sales",
+          path: "/sales/add",
         },
         {
           name: "Sales",
           icon: <ShoppingBasket size={18} />,
-          path: "/customers",
+          path: "/sales",
         },
         {
           name: "Purchases",
           icon: <ShoppingBag size={18} />,
-          path: "/customers",
+          path: "/purchases",
         },
       ],
     },
@@ -143,7 +143,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         {
           name: "Type Payment",
           icon: <CreditCard size={18} />,
-          path: "/type-payment",
+          path: "/type-payments",
         },
       ],
     },
