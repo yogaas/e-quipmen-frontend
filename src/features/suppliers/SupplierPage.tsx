@@ -68,7 +68,7 @@ export default function SupplierPage() {
               <Box className="text-blue-600" /> Suppliers Management
             </>
           }
-          description="Manage system Suppliers, roles, and access controls."
+          description="Manage suppliers create, update and delete."
           action={
             <>
               <Button

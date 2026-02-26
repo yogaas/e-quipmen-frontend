@@ -68,7 +68,7 @@ export default function CategoryPage() {
               <Box className="text-blue-600" /> Category Item
             </>
           }
-          description="Manage system Categorys, roles, and access controls."
+          description="Manage categories create, update and delete."
           action={
             <>
               <Button

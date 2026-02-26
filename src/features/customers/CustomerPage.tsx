@@ -68,7 +68,7 @@ export default function CustomerPage() {
               <Box className="text-blue-600" /> Customers Management
             </>
           }
-          description="Manage system Customers, roles, and access controls."
+          description="Manage customers create, update and delete."
           action={
             <>
               <Button

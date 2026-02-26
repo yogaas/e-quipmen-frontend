@@ -68,7 +68,7 @@ export default function PaymentPage() {
               <CreditCard className="text-blue-600" /> Type Payments
             </>
           }
-          description="Manage system Payments, roles, and access controls."
+          description="Manage type payments create, update and delete."
           action={
             <>
               <Button

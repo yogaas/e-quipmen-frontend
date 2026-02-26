@@ -79,7 +79,7 @@ export default function AccountPage() {
               <BookCopy className="text-blue-600" /> Accounts Management
             </>
           }
-          description="Manage system Accounts, roles, and access controls."
+          description="Manage accounts create, update and delete."
           action={
             <>
               <Button

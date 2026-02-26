@@ -67,7 +67,7 @@ export default function ItemPage() {
               <Box className="text-blue-600" /> Items Management
             </>
           }
-          description="Manage system Items, roles, and access controls."
+          description="Manage items create, update and delete."
           action={
             <>
               <Button

@@ -1,39 +1,39 @@
 import { Plus, RefreshCw, Box } from "lucide-react";
 import { PageHeader } from "../../components/common/PageHeader";
 import ConfirmModal from "../../components/ui/ConfirmModal";
-import FormSection from "./components/FormSection";
 import { Button } from "../../components/ui/Button";
 import { useState } from "react";
 import { useToast } from "../../components/common/ToastContext";
-import type { Section } from "./sections.type";
-import { useSectionsListPage } from "./components/utils/useSectionsListPage";
-import SectionTable from "./components/SectionTable";
+import type { Sale } from "./sales.type";
+import { useSalesListPage } from "./components/utils/useSalesListPage";
+import SaleTable from "./components/SaleTable";
+import { useNavigate } from "react-router-dom";
 
-export default function SectionPage() {
+export default function SalePage() {
   const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const [deleteModal, setDeleteModal] = useState<{
     open: boolean;
-    id: number | null;
+    id: string | null;
   }>({
     open: false,
     id: null,
   });
   const [formModal, setFormModal] = useState(false);
-  const [editingSection, setEditingSection] = useState<Section | null>(null);
+  const [editingSale, setEditingSale] = useState<Sale | null>(null);
 
-  const { onReload, deleteSection, fetchSectionForEdit } =
-    useSectionsListPage();
+  const { onReload, deleteSale, fetchSaleForEdit } = useSalesListPage();
 
   const handleConfirmDelete = () => {
-    if (deleteModal.id != null && deleteModal.id > 0) {
-      deleteSection(deleteModal.id);
+    if (deleteModal.id != null && deleteModal.id.length > 0) {
+      deleteSale(deleteModal.id);
       closeDeleteModal();
       showToast("Pengguna telah dihapus dari sistem", "success");
     }
   };
 
-  const openDeleteModal = (id: number) => {
+  const openDeleteModal = (id: string) => {
     setDeleteModal({ open: true, id });
   };
 
@@ -42,19 +42,19 @@ export default function SectionPage() {
   };
 
   const openCreateModal = () => {
-    setEditingSection(null);
+    setEditingSale(null);
     setFormModal(true);
   };
 
   const closeFormModal = () => {
     setFormModal(false);
-    setEditingSection(null);
+    setEditingSale(null);
   };
 
-  const handleEdit = async (id: number) => {
-    const Section = await fetchSectionForEdit(id);
-    if (Section) {
-      setEditingSection(Section);
+  const handleEdit = async (id: string) => {
+    const Sale = await fetchSaleForEdit(id);
+    if (Sale) {
+      setEditingSale(Sale);
       setFormModal(true);
     }
   };
@@ -65,17 +65,17 @@ export default function SectionPage() {
         <PageHeader
           title={
             <>
-              <Box className="text-blue-600" /> Sections Management
+              <Box className="text-blue-600" /> Sales Management
             </>
           }
-          description="Manage system Sections, roles, and access controls."
+          description="Manage system Sales, roles, and access controls."
           action={
             <>
               <Button
-                onClick={openCreateModal}
+                onClick={() => navigate("/sales/add")}
                 className="gap-2 shadow-lg shadow-primary-500/20"
               >
-                <Plus size={18} /> New Section
+                <Plus size={18} /> New Sale
               </Button>
               <Button
                 variant="outline"
@@ -88,26 +88,15 @@ export default function SectionPage() {
           }
         />
 
-        <SectionTable
-          handleEdit={handleEdit}
-          openDeleteModal={openDeleteModal}
-        />
+        <SaleTable handleEdit={handleEdit} openDeleteModal={openDeleteModal} />
       </div>
 
       <ConfirmModal
         isOpen={deleteModal.open}
         onClose={closeDeleteModal}
         onConfirm={handleConfirmDelete}
-        title="Hapus Section?"
+        title="Hapus Sale?"
         message="Tindakan ini permanen. Akun pengguna akan dihapus dari sistem."
-      />
-
-      <FormSection
-        isModalOpen={formModal}
-        setIsModalOpen={(open) => {
-          if (!open) closeFormModal();
-        }}
-        SectionCollection={editingSection}
       />
     </>
   );

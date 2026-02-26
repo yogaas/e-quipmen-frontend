@@ -10,69 +10,64 @@ import { useUsersListPage } from "./components/utils/useUsersListPage";
 import UserTable from "./components/UserTable";
 
 export default function UserPage() {
-    const { showToast } = useToast();
+  const { showToast } = useToast();
 
-    const [deleteModal, setDeleteModal] = useState<{
-      open: boolean;
-      id: number | null;
-    }>({
-      open: false,
-      id: null,
-    });
-    const [formModal, setFormModal] = useState(false);
-    const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{
+    open: boolean;
+    id: number | null;
+  }>({
+    open: false,
+    id: null,
+  });
+  const [formModal, setFormModal] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
-    const {
-        onReload,
-        deleteUser,
-        fetchUserForEdit,
-      } = useUsersListPage();
+  const { onReload, deleteUser, fetchUserForEdit } = useUsersListPage();
 
-    const handleConfirmDelete = () => {
-        if (deleteModal.id != null && deleteModal.id > 0) {
-          deleteUser(deleteModal.id);
-          closeDeleteModal();
-          showToast("Pengguna telah dihapus dari sistem", "success");
-        }
-      };
+  const handleConfirmDelete = () => {
+    if (deleteModal.id != null && deleteModal.id > 0) {
+      deleteUser(deleteModal.id);
+      closeDeleteModal();
+      showToast("Pengguna telah dihapus dari sistem", "success");
+    }
+  };
 
-      const openDeleteModal = (id: number) => {
-        setDeleteModal({ open: true, id });
-      };
+  const openDeleteModal = (id: number) => {
+    setDeleteModal({ open: true, id });
+  };
 
-      const closeDeleteModal = () => {
-        setDeleteModal({ open: false, id: null });
-      };
-    
-      const openCreateModal = () => {
-        setEditingUser(null);
-        setFormModal(true);
-      };
-    
-      const closeFormModal = () => {
-        setFormModal(false);
-        setEditingUser(null);
-      };
-      
-    
-      const handleEdit = async (id: number) => {
-        const user = await fetchUserForEdit(id);
-        if (user) {
-          setEditingUser(user);
-          setFormModal(true);
-        }
-      };
+  const closeDeleteModal = () => {
+    setDeleteModal({ open: false, id: null });
+  };
 
-    return(
+  const openCreateModal = () => {
+    setEditingUser(null);
+    setFormModal(true);
+  };
+
+  const closeFormModal = () => {
+    setFormModal(false);
+    setEditingUser(null);
+  };
+
+  const handleEdit = async (id: number) => {
+    const user = await fetchUserForEdit(id);
+    if (user) {
+      setEditingUser(user);
+      setFormModal(true);
+    }
+  };
+
+  return (
     <>
-    <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="space-y-6 animate-in fade-in duration-500">
         <PageHeader
           title={
             <>
               <Users className="text-blue-600" /> Users Management
             </>
           }
-          description="Manage system users, roles, and access controls."
+          description="Manage users create, update and delete."
           action={
             <>
               <Button
@@ -93,23 +88,23 @@ export default function UserPage() {
         />
 
         <UserTable handleEdit={handleEdit} openDeleteModal={openDeleteModal} />
+      </div>
 
-    </div>
-
-        <ConfirmModal
+      <ConfirmModal
         isOpen={deleteModal.open}
         onClose={closeDeleteModal}
         onConfirm={handleConfirmDelete}
         title="Hapus User?"
         message="Tindakan ini permanen. Akun pengguna akan dihapus dari sistem."
-        />
+      />
 
-        <FormUser
+      <FormUser
         isModalOpen={formModal}
         setIsModalOpen={(open) => {
-            if (!open) closeFormModal();
+          if (!open) closeFormModal();
         }}
         userCollection={editingUser}
-        />
-    </>)
+      />
+    </>
+  );
 }

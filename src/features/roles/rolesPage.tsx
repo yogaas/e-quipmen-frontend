@@ -67,7 +67,7 @@ export default function RolePage() {
               <KeyRound className="text-blue-600" /> Roles Management
             </>
           }
-          description="Manage system Roles, roles, and access controls."
+          description="Manage roles create, update and delete."
           action={
             <>
               <Button

@@ -1,20 +1,20 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import {
-  fetchSections,
+  fetchSales,
   setSearch,
   setSort,
   setPagination,
-  deleteSectionThunk,
-  readSectionThunk,
-} from "../../sectionsSlice";
-import type { Section } from "../../sections.type";
+  deleteSaleThunk,
+  readSaleThunk,
+} from "../../salesSlice";
+import type { Sale } from "../../sales.type";
 
 /**
- * Encapsulates list state and handlers for Sections CRUD page.
+ * Encapsulates list state and handlers for Sales CRUD page.
  * Reuse this pattern for other entities (e.g. useProductsListPage).
  */
-export function useSectionsListPage() {
+export function useSalesListPage() {
   const dispatch = useAppDispatch();
   const {
     list,
@@ -24,21 +24,28 @@ export function useSectionsListPage() {
     totalCount,
     sortOrder,
     orderByFieldName,
-  } = useAppSelector((state) => state.sections);
+  } = useAppSelector((state) => state.sales);
 
   useEffect(() => {
-    dispatch(fetchSections({ pageIndex, pageSize }));
+    dispatch(
+      fetchSales({
+        pageIndex,
+        pageSize,
+        sortOrder: "desc",
+        orderByFieldName: "time_created",
+      }),
+    );
   }, [dispatch, pageIndex, pageSize]);
 
   const onSearch = (value: string) => {
     dispatch(setSearch(value));
-    dispatch(fetchSections({ pageIndex, pageSize, search: value }));
+    dispatch(fetchSales({ pageIndex, pageSize, search: value }));
   };
 
   const onSort = (field: string, order: "asc" | "desc") => {
     dispatch(setSort({ field, order }));
     dispatch(
-      fetchSections({
+      fetchSales({
         pageIndex,
         pageSize,
         orderByFieldName: field,
@@ -49,28 +56,28 @@ export function useSectionsListPage() {
 
   const onPageChange = (page: number) => {
     dispatch(setPagination({ pageIndex: page, pageSize }));
-    dispatch(fetchSections({ pageIndex: page, pageSize }));
+    dispatch(fetchSales({ pageIndex: page, pageSize }));
   };
 
   const onPageSizeChange = (size: number) => {
-    dispatch(fetchSections({ pageIndex: 0, pageSize: size ?? 10 }));
+    dispatch(fetchSales({ pageIndex: 0, pageSize: size ?? 10 }));
   };
 
   const onReload = () => {
-    dispatch(fetchSections({ pageIndex: 0, pageSize: 10 }));
+    dispatch(fetchSales({ pageIndex: 0, pageSize: 10 }));
   };
 
-  const fetchSectionForEdit = async (id: number): Promise<Section | null> => {
-    const result = await dispatch(readSectionThunk({ id }));
-    if (readSectionThunk.fulfilled.match(result)) {
-      return result.payload as Section;
+  const fetchSaleForEdit = async (id: string): Promise<Sale | null> => {
+    const result = await dispatch(readSaleThunk({ id }));
+    if (readSaleThunk.fulfilled.match(result)) {
+      return result.payload as Sale;
     }
     return null;
   };
 
-  const deleteSection = (id: number) => {
-    dispatch(deleteSectionThunk(id));
-    dispatch(fetchSections({ pageIndex, pageSize }));
+  const deleteSale = (id: string) => {
+    dispatch(deleteSaleThunk(id));
+    dispatch(fetchSales({ pageIndex, pageSize }));
   };
 
   const safeSortOrder: "asc" | "desc" | undefined =
@@ -89,7 +96,7 @@ export function useSectionsListPage() {
     onPageChange,
     onPageSizeChange,
     onReload,
-    fetchSectionForEdit,
-    deleteSection,
+    fetchSaleForEdit,
+    deleteSale,
   };
 }

@@ -1,29 +1,29 @@
-// features/Sections/SectionSlice.ts
+// features/Sales/SaleSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import {
-  getSections,
-  createSection,
-  updateSection,
-  deleteSection,
-  readSection,
-} from "../sections/sectionsService";
-import type { Section, SectionState } from "./sections.type";
+  getSales,
+  createSale,
+  updateSale,
+  deleteSale,
+  readSale,
+} from "../sales/salesService";
+import type { Sale, SaleState } from "./sales.type";
 import getErrorMessage from "../../app/error";
 
-export const fetchSections = createAsyncThunk(
-  "Sections/fetch",
+export const fetchSales = createAsyncThunk(
+  "Sales/fetch",
   async (params: any) => {
-    const res = await getSections(params);
+    const res = await getSales(params);
     return res.data;
   },
 );
 
-export const createSectionThunk = createAsyncThunk(
-  "Sections/create",
-  async (data: Partial<Section>, { rejectWithValue }) => {
+export const createSaleThunk = createAsyncThunk(
+  "Sales/create",
+  async (data: Partial<Sale>, { rejectWithValue }) => {
     try {
-      const res = await createSection(data);
+      const res = await createSale(data);
 
       if (!res.data.success) {
         return rejectWithValue(getErrorMessage(res.data));
@@ -36,31 +36,31 @@ export const createSectionThunk = createAsyncThunk(
   },
 );
 
-export const updateSectionThunk = createAsyncThunk(
-  "Sections/update",
-  async ({ id, data }: { id: number; data: Partial<Section> }) => {
-    const res = await updateSection(id, data);
+export const updateSaleThunk = createAsyncThunk(
+  "Sales/update",
+  async ({ id, data }: { id: string; data: Partial<Sale> }) => {
+    const res = await updateSale(id, data);
     return res.data.data;
   },
 );
 
-export const readSectionThunk = createAsyncThunk(
-  "Sections/read",
-  async ({ id }: { id: number }) => {
-    const res = await readSection(id);
+export const readSaleThunk = createAsyncThunk(
+  "Sales/read",
+  async ({ id }: { id: string }) => {
+    const res = await readSale(id);
     return res.data.data;
   },
 );
 
-export const deleteSectionThunk = createAsyncThunk(
-  "Sections/delete",
-  async (id: number) => {
-    await deleteSection(id);
+export const deleteSaleThunk = createAsyncThunk(
+  "Sales/delete",
+  async (id: string) => {
+    await deleteSale(id);
     return id;
   },
 );
 
-const initialState: SectionState = {
+const initialState: SaleState = {
   list: [],
   totalCount: 0,
   loading: false,
@@ -69,12 +69,12 @@ const initialState: SectionState = {
   sortOrder: "",
   orderByFieldName: "",
   search: "",
-  Section: null,
+  Sale: null,
   error: null,
 };
 
-const SectionSlice = createSlice({
-  name: "Sections",
+const SaleSlice = createSlice({
+  name: "Sales",
   initialState,
   reducers: {
     setSearch(state, action: PayloadAction<string>) {
@@ -105,10 +105,10 @@ const SectionSlice = createSlice({
   extraReducers: (builder) => {
     builder
       /* FETCH */
-      .addCase(fetchSections.pending, (state) => {
+      .addCase(fetchSales.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchSections.fulfilled, (state, action) => {
+      .addCase(fetchSales.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload.data;
         state.totalCount = action.payload.totalCount ?? 0;
@@ -117,45 +117,49 @@ const SectionSlice = createSlice({
         state.sortOrder = action.payload.sortOrder ?? "";
         state.orderByFieldName = action.payload.orderByFieldName ?? "";
       })
-      .addCase(fetchSections.rejected, (state) => {
+      .addCase(fetchSales.rejected, (state) => {
         state.loading = false;
       })
 
       /* CREATE */
-      .addCase(createSectionThunk.pending, (state) => {
+      .addCase(createSaleThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createSectionThunk.fulfilled, (state, action) => {
+      .addCase(createSaleThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.list.push(action.payload);
       })
-      .addCase(createSectionThunk.rejected, (state, action) => {
+      .addCase(createSaleThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
 
       /* UPDATE */
-      .addCase(updateSectionThunk.fulfilled, (state, action) => {
-        const index = state.list.findIndex((u) => u.id === action.payload.id);
+      .addCase(updateSaleThunk.fulfilled, (state, action) => {
+        const index = state.list.findIndex(
+          (u) => u.unique_code === action.payload.unique_code,
+        );
         if (index !== -1) {
           state.list[index] = action.payload;
         }
       })
 
       /* READ */
-      .addCase(readSectionThunk.fulfilled, (state, action) => {
+      .addCase(readSaleThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.Section = action.payload;
+        state.Sale = action.payload;
       })
 
       /* DELETE */
-      .addCase(deleteSectionThunk.fulfilled, (state, action) => {
-        state.list = state.list.filter((u) => u.id !== action.payload);
+      .addCase(deleteSaleThunk.fulfilled, (state, action) => {
+        state.list = state.list.filter(
+          (u) => u.unique_code !== action.payload.toString(),
+        );
         state.totalCount -= 1;
       });
   },
 });
 
-export const { setSearch, setSort, setPagination } = SectionSlice.actions;
-export default SectionSlice.reducer;
+export const { setSearch, setSort, setPagination } = SaleSlice.actions;
+export default SaleSlice.reducer;

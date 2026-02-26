@@ -25,6 +25,8 @@ import SupplierPage from "./features/suppliers/SupplierPage";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
 import AccountPage from "./features/accounts/AccountPage.tsx";
 import PaymentPage from "./features/payments/PaymentPage.tsx";
+import SalePage from "./features/sales/SalePage.tsx";
+import SaleAddPage from "./features/sales/SaleAddPage.tsx";
 
 const ToastContainer: React.FC = () => {
   const { toasts, removeToast } = useToast();
@@ -110,7 +112,6 @@ const App: React.FC = () => {
                     element={<Navigate to="/dashboard" replace />}
                   />
                   <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/sales" element={<Sales />} />
                   <Route path="/users" element={<UserPage />} />
                   <Route path="/roles" element={<RolePage />} />
                   <Route path="/items" element={<ItemPage />} />
@@ -120,6 +121,9 @@ const App: React.FC = () => {
                   <Route path="/sections" element={<SectionPage />} />
                   <Route path="/accounts" element={<AccountPage />} />
                   <Route path="/type-payments" element={<PaymentPage />} />
+                  <Route path="/sales" element={<SalePage />} />
+                  <Route path="/sales/add" element={<SaleAddPage />} />
+                  <Route path="/sales/show/:id" element={<SaleAddPage />} />
 
                   <Route path="/products" element={<Products />} />
                   <Route path="/calendar" element={<Calendar />} />

@@ -1,17 +1,17 @@
 import { DataTable } from "../../../components/common/DataTable";
-import type { Section } from "../sections.type";
-import { useSectionsListPage } from "./utils/useSectionsListPage";
-import { getSectionColumns } from "./utils/sectionsColumns";
+import type { Sale } from "../sales.type";
+import { useSalesListPage } from "./utils/useSalesListPage";
+import { getSaleColumns } from "./utils/salesColumns";
 
-interface SectionTableProp {
-  handleEdit: (id: number) => void;
-  openDeleteModal: (id: number) => void;
+interface SaleTableProp {
+  handleEdit: (id: string) => void;
+  openDeleteModal: (id: string) => void;
 }
 
-export default function SectionTable({
+export default function SaleTable({
   handleEdit,
   openDeleteModal,
-}: SectionTableProp) {
+}: SaleTableProp) {
   const {
     list,
     loading,
@@ -24,15 +24,15 @@ export default function SectionTable({
     onSort,
     onPageChange,
     onPageSizeChange,
-  } = useSectionsListPage();
+  } = useSalesListPage();
 
-  const columns = getSectionColumns({
+  const columns = getSaleColumns({
     onEdit: handleEdit,
     onDelete: openDeleteModal,
   });
 
   return (
-    <DataTable<Section>
+    <DataTable<Sale>
       data={list}
       columns={columns}
       pageIndex={pageIndex}
@@ -44,7 +44,7 @@ export default function SectionTable({
       onPageSizeChange={onPageSizeChange}
       sortOrder={sortOrder}
       sortField={orderByFieldName}
-      searchPlaceholder="Find Sections..."
+      searchPlaceholder="Find Sales..."
       isLoading={loading}
     />
   );

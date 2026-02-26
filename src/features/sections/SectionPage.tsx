@@ -68,7 +68,7 @@ export default function SectionPage() {
               <Box className="text-blue-600" /> Sections Management
             </>
           }
-          description="Manage system Sections, roles, and access controls."
+          description="Manage sections create, update and delete."
           action={
             <>
               <Button
