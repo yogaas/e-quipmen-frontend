@@ -96,7 +96,7 @@ export default function FormSaleCart({ fieldArray, openLookup }: Props) {
                             {item.item_name}
                           </p>
                           <p className="text-[10px] text-gray-500">
-                            ID: {item.item_id}
+                            Unit : {item.unit}
                           </p>
                         </div>
                       </div>
@@ -128,7 +128,7 @@ export default function FormSaleCart({ fieldArray, openLookup }: Props) {
                     </td>
                     <td className="px-5 py-4 text-center">
                       <button
-                        onClick={() => remove(item.id)}
+                        onClick={() => remove(item.item_id)}
                         className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded transition-all"
                       >
                         <Trash2 size={14} />

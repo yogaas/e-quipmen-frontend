@@ -1,3 +1,4 @@
+import { Type } from "lucide-react";
 import type { Customer } from "../customers/customers.type";
 import type { Section } from "../sections/sections.type";
 import { z } from "zod";
@@ -65,8 +66,7 @@ export interface SaleState {
 }
 
 export const SaleDetailSchema = z.object({
-  id: z.number(),
-  item_id: z.string().min(1, "Barang wajib dipilih"),
+  item_id: z.number(),
   item_name: z.string().min(1, "Nama barang wajib ada"),
   unit: z.string().min(1, "Nama barang wajib ada"),
   price: z.number().min(1, "Harga tidak valid"),
@@ -76,10 +76,12 @@ export const SaleDetailSchema = z.object({
 
 export const SaleSchema = z.object({
   tanggal: z.string(),
+  table: z.string(),
   section_id: z.string().min(1, "Section is required"),
   section_name: z.string().min(1, "Section is required"),
   customer_id: z.string().min(1, "Customer is required"),
   customer_name: z.string().min(1, "Customer is required"),
+  type_transaction: z.string().min(1, "Type is required"),
   price_discount: z.string().optional(),
   price_shipping: z.string().optional(),
   details: z.array(SaleDetailSchema),

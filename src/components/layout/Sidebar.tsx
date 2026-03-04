@@ -197,11 +197,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         <div
           className={`flex items-center gap-2.5 overflow-hidden transition-all duration-300 ${isOpen ? "opacity-100" : "opacity-0 w-0"}`}
         >
-          <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center text-white font-bold shadow-lg shadow-primary-500/20">
-            N
+          <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold shadow-lg shadow-primary-500/20">
+            E
           </div>
           <span className="font-bold text-lg tracking-tight dark:text-white">
-            Nexus
+            - Quipment
           </span>
         </div>
         <button

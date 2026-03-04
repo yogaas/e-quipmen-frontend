@@ -49,13 +49,23 @@ import { useToast } from "../../components/common/ToastContext";
 import FormSaleCart from "./components/FormSaleCart";
 import Lookuptable from "./components/LookupTable";
 import LookupTable from "./components/LookupTable";
+import FormSaleSummary from "./components/FormSaleSummary";
+import { handleThunkWithToast } from "../../utils/thunkToast";
+import {
+  createPaymentThunk,
+  updatePaymentThunk,
+} from "../payments/paymentsSlice";
+import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../app/hooks";
 
 const mapToFormValues = IMapper<SaleFormValues>({
   tanggal: (s) => s?.tanggal ?? new Date().toISOString().slice(0, 16),
+  table: (s) => s?.table ?? "-",
   section_id: (s) => s?.section_id ?? "",
-  section_name: (s) => s?.section_name ?? "",
+  section_name: (s) => s?.section_name ?? "-",
   customer_id: (s) => s?.customer_id ?? "",
-  customer_name: (s) => s?.customer_name ?? "",
+  customer_name: (s) => s?.customer_name ?? "-",
+  type_transaction: (s) => s?.type_transaction ?? "TAKEAWAY",
   price_discount: (s) => s?.price_discount.toString() ?? "0",
   price_shipping: (s) => s?.price_shipping.toString() ?? "0",
   details: (s) =>
@@ -69,16 +79,16 @@ const mapToFormValues = IMapper<SaleFormValues>({
 });
 
 export default function SaleAddPage() {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { id } = useParams<{ id: string }>();
 
   const [saleCollection, setSaleCollection] = useState<Sale | null>(null);
-  const [isLookupTableOpen, setIsLookupTableOpen] = useState(false);
   const [isLookupItemOpen, setIsLookupItemOpen] = useState(false);
   const [transactionType, setTransactionType] = useState<
     "DINE_IN" | "TAKEAWAY" | "DELIVERY"
-  >("DINE_IN");
+  >("TAKEAWAY");
 
   const [transactionDetailsValues, setTransactionDetailsValues] = useState<
     SaleDetails[]
@@ -104,7 +114,6 @@ export default function SaleAddPage() {
     defaultValues,
   });
 
-  const watchform = watch();
   const fieldArray = useFieldArray({
     control,
     name: "details",
@@ -120,6 +129,11 @@ export default function SaleAddPage() {
   const selectedSection = (section: Section) => {
     setValue("section_id", section.id.toString());
     setValue("section_name", section.name);
+  };
+
+  const [isLookupTableOpen, setIsLookupTableOpen] = useState(false);
+  const selectedTable = (nomor: string) => {
+    setValue("table", nomor);
   };
 
   // --- Payment State ---
@@ -143,7 +157,9 @@ export default function SaleAddPage() {
   // --- Handlers ---
   const addToCart = (items: Item[]) => {
     items.forEach((product) => {
-      const existing = fieldArray.fields.find((item) => item.id === product.id);
+      const existing = fieldArray.fields.find(
+        (item) => item.item_id === product.id,
+      );
       if (existing) {
         const item = fieldArray.fields[product.id];
         fieldArray.update(product.id, {
@@ -180,8 +196,30 @@ export default function SaleAddPage() {
     }
   };
 
+  const onSubmit = async (data: SaleFormValues) => {
+    console.log(data);
+    console.log(fieldArray);
+
+    // if (saleCollection) {
+    //   await handleThunkWithToast(
+    //     dispatch,
+    //     updatePaymentThunk,
+    //     { id: saleCollection.id, data },
+    //     { showToast, onSuccess: () => {} },
+    //   );
+    // } else {
+    //   await handleThunkWithToast(dispatch, createPaymentThunk, data, {
+    //     showToast,
+    //     onSuccess: () => {},
+    //   });
+    // }
+  };
+
+  console.log(errors);
+
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <button type="submit">submit</button>
       <div className="space-y-6 animate-in fade-in duration-500">
         <PageHeader
           title={
@@ -272,8 +310,8 @@ export default function SaleAddPage() {
                 Type
               </label>
               <select
-                className="w-full bg-transparent border-none p-0 text-sm font-medium text-gray-900 focus:ring-0 cursor-pointer"
-                value={transactionType}
+                {...register("type_transaction")}
+                className="w-full bg-transparent border-none outline-none p-0 text-sm font-medium text-gray-900 focus:ring-0 cursor-pointer"
                 onChange={(e) => setTransactionType(e.target.value as any)}
               >
                 <option value="DINE_IN">Dine In</option>
@@ -283,31 +321,33 @@ export default function SaleAddPage() {
             </div>
           </div>
 
-          {transactionType === "DINE_IN" && (
-            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
-              <div className="p-4 bg-orange-50 text-orange-600 rounded-lg">
-                <Utensils size={20} />
-              </div>
-              <div className="flex-1">
-                <label className="text-xs font-semibold text-gray-500 uppercase">
-                  Table No
-                </label>
-                <input
-                  type="text"
-                  className="w-full bg-transparent border-none p-0 text-sm font-medium text-gray-900 focus:ring-0 placeholder-gray-300"
-                  value={watchform.customer_id ?? "-"}
-                  disabled={true}
-                />
-              </div>
-
-              <button
-                onClick={() => setIsLookupTableOpen(true)}
-                className="h-8 w-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center transition-all hover:bg-blue-600 hover:text-white"
-              >
-                <Plus size={16} />
-              </button>
+          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+            <div className="p-4 bg-orange-50 text-orange-600 rounded-lg">
+              <Utensils size={20} />
             </div>
-          )}
+            <div className="flex-1">
+              <label className="text-xs font-semibold text-gray-500 uppercase">
+                Table No
+              </label>
+              <input
+                type="text"
+                {...register("table")}
+                className="w-full bg-transparent border-none p-0 text-sm font-medium text-gray-900 focus:ring-0 placeholder-gray-300"
+                disabled={true}
+              />
+            </div>
+
+            <button
+              onClick={() =>
+                watch("type_transaction") == "DINE_IN"
+                  ? setIsLookupTableOpen(true)
+                  : showToast("Type Dine In for chose the table", "info")
+              }
+              className="h-8 w-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center transition-all hover:bg-blue-600 hover:text-white"
+            >
+              <Plus size={16} />
+            </button>
+          </div>
 
           <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3">
             <div className="p-4 bg-green-50 text-green-600 rounded-lg">
@@ -319,8 +359,8 @@ export default function SaleAddPage() {
               </label>
               <input
                 type="datetime-local"
+                {...register("tanggal")}
                 className="w-full bg-transparent border-none p-0 text-sm font-medium text-gray-900 focus:ring-0"
-                value={watchform.tanggal}
                 disabled={true}
               />
             </div>
@@ -381,7 +421,7 @@ export default function SaleAddPage() {
                         type="text"
                         placeholder="0.00"
                         className="w-full pl-8 text-right pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                        value={formatNumberID(watchform.price_discount || 0)}
+                        value={formatNumberID(watch("price_discount") || 0)}
                         onChange={(e) => {
                           setValue(
                             "price_discount",
@@ -433,80 +473,7 @@ export default function SaleAddPage() {
           {/* --- RIGHT COLUMN: SUMMARY & PAYMENT (4/12) --- */}
           <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-4">
             {/* Calculations Card */}
-            <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-200 overflow-hidden">
-              <div className="p-5 border-b border-gray-100 bg-gray-50/50">
-                <h3 className="font-bold text-gray-800 flex items-center gap-2">
-                  <Calculator size={18} className="text-gray-500" /> Payment
-                  Summary
-                </h3>
-              </div>
-
-              <div className="p-6 space-y-4">
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Subtotal</span>
-                  <span className="font-medium">
-                    {formatNumberID(subtotal.toFixed(2))}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Tax (10%)</span>
-                  <span className="font-medium">
-                    {formatNumberID(tax.toFixed(2))}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Shipping</span>
-                  <span className="font-medium">
-                    {formatNumberID(shippingCost.toFixed(2))}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm text-green-600 font-medium">
-                  <span>Discount</span>
-                  <span>{formatNumberID(discountAmount.toFixed(2))}</span>
-                </div>
-
-                <div className="border-t border-dashed border-gray-200 pt-4 mt-2">
-                  <div className="flex justify-between items-end mb-1">
-                    <span className="text-gray-900 font-bold">
-                      Total Payable
-                    </span>
-                    <span className="text-3xl font-bold text-blue-600 tracking-tight">
-                      {formatNumberID(grandTotal.toFixed(2))}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-4 bg-gray-50 flex flex-row gap-2 border-t border-gray-100">
-                <Button
-                  className="w-full py-3.5 text-base shadow-lg shadow-blue-200 mb-3"
-                  disabled={
-                    transactionDetailsValues.length === 0 &&
-                    watchform.section_id != null
-                  }
-                  onClick={() => {
-                    setAmountPaid(grandTotal);
-                  }}
-                >
-                  <CreditCard size={18} className="mr-2" />
-                  Proceed to Payment
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full py-3.5 text-base shadow-lg shadow-blue-200 mb-3"
-                  disabled={
-                    transactionDetailsValues.length === 0 &&
-                    watchform.customer_id != null
-                  }
-                  onClick={() => {
-                    setAmountPaid(grandTotal);
-                  }}
-                >
-                  <Save size={18} className="mr-2" />
-                  Save Draft
-                </Button>
-              </div>
-            </div>
+            <FormSaleSummary fieldArray={fieldArray} control={control} />
           </div>
         </div>
       </div>
@@ -541,9 +508,11 @@ export default function SaleAddPage() {
       <LookupTable
         isTableModalOpen={isLookupTableOpen}
         setIsTableModalOpen={(open) => setIsLookupTableOpen(open)}
-        setTableNumber={() => {}}
-        tableNumber=""
+        setTableNumber={(nomor) => {
+          selectedTable(nomor);
+        }}
+        tableNumber={watch("table")}
       />
-    </>
+    </form>
   );
 }
