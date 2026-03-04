@@ -8,7 +8,7 @@
 
 Sistem Point of Sale modern yang komprehensif untuk mengelola penjualan, inventaris, pelanggan, dan laporan bisnis secara terintegrasi.
 
-[🌐 Demo](#) • [📚 Dokumentasi](#dokumentasi-api) • [🐛 Laporkan Bug](#) • [✨ Minta Fitur](#)
+[🌐 Demo](#) • [📚 Dokumentasi API](#dokumentasi-api) • [🤖 Workflow AI](./docs/AI_WORKFLOW.md) • [📖 Detail Fitur](./docs/FEATURES.md)
 
 </div>
 
@@ -149,13 +149,13 @@ Sistem Point of Sale modern yang komprehensif untuk mengelola penjualan, inventa
   - Laporan pelanggan
   - Laporan laba-rugi
 
-### 📧 **Notifikasi & Email**
+### 📧 **Alat Produktivitas & Sistem**
 
 - **Toast Notifications** – Notifikasi real-time untuk aksi user
-- **Email Module** – Sistem pengiriman email
-  - Invoice penjualan
-  - Notifikasi pelanggan
-  - Laporan pengguna
+- **Email Module** – Sistem pengiriman email (Invoice, Notifikasi, dll)
+- **Calendar** – Kalender interaktif untuk mengelola jadwal operasi dan event
+- **Widgets** – Widget panel fungsional untuk produktivitas staf tambahan
+- **Settings** – Akses pengaturan profil pengguna dan pengaturan umum toko (General)
 
 ### 🎨 **UI & UX**
 
@@ -504,6 +504,14 @@ feature-name/
 
 - Kelola data pemasok seperti pelanggan
 - Kelola akun keuangan untuk laporan
+
+---
+
+## 📄 Dokumentasi Tambahan
+
+Untuk referensi detail fitur UI maupun standar panduan pengembangan agen AI:
+- [🤖 **Panduan Alur Kerja AI (AI Workflow)**](./docs/AI_WORKFLOW.md)
+- [📖 **Dokumentasi Detail Fitur**](./docs/FEATURES.md)
 
 ---
 
